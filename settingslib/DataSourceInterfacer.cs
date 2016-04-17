@@ -5,6 +5,8 @@ namespace settingslib
 {
     public class DataSourceInterfacer
     {
+        public const string SETTING = "Setting";
+        public const string SETTING_INSTANCE = "SettingInstance";
         private string _connString;
         private string _prefix;
 
@@ -24,13 +26,13 @@ namespace settingslib
 
         public bool TablesExist()
         {
-            return DoesIndividualDbTableExists("right") && DoesIndividualDbTableExists("userright");
+            return DoesIndividualDbTableExists(SETTING) && DoesIndividualDbTableExists(SETTING_INSTANCE);
         }
 
         public void BuildTables()
         {
-            CreateTable("right");
-            CreateTable("userright");
+            CreateTable(SETTING);
+            CreateTable(SETTING_INSTANCE);
         }
 
         private SqlConnection _connection;
@@ -85,31 +87,32 @@ namespace settingslib
         private string GenerateQueryToCreateTable(string tableRootName)
         {
             tableRootName = tableRootName.ToLowerInvariant();
+            string effectiveTableName = GetTableName(tableRootName);
             string query;
 
-            if (tableRootName.Equals("right"))
+            if (tableRootName.Equals(SETTING))
             {
                 query = string.Format(" " +
                     "CREATE TABLE [{0}](" +
-                        "RightId			INT	NOT NULL IDENTITY(1,1) PRIMARY KEY," +
-                        "RightCategory		VARCHAR(200)," +
-                        "RightName			VARCHAR(200) NOT NULL" +
-                    ")", GetTableName("Right"));
+                        "SettingId			INT	NOT NULL IDENTITY(1,1) PRIMARY KEY," +
+                        "SettingScope		VARCHAR(200) NOT NULL," +
+                        "SettingName		VARCHAR(200) NOT NULL" +
+                    ")", effectiveTableName);
             }
-            else if (tableRootName.Equals("userright"))
+            else if (tableRootName.Equals(SETTING_INSTANCE))
             {
                 query = string.Format(" " +
                     "CREATE TABLE {0}(" +
-                        "UserRightId		INT NOT NULL IDENTITY(1,1) PRIMARY KEY," +
-                        "RightCategory	    VARCHAR(200) NULL," +
+                        "SettingInstanceId	INT NOT NULL IDENTITY(1,1) PRIMARY KEY," +
+                        "SettingScope	    VARCHAR(200) NOT NULL," +
                         "RightName          VARCHAR(200) NOT NULL," +
-                        "ContextId		    INT NOT NULL," +
-                        "[Value]			BIT NULL" +
-                    ")", GetTableName("UserRight"));
+                        "InstanceKey        VARCHAR(200) NOT NULL," +
+                        "[Value]			VARCHAR(1000) NULL" +
+                    ")", effectiveTableName);
             }
             else
             {
-                throw new Exception(string.Format("table name '{0}' not recognized", GetTableName(tableRootName)));
+                throw new Exception(string.Format("table name '{0}' not recognized", effectiveTableName));
             }
 
             return query;

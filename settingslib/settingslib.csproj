@@ -40,13 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSourceInterfacer.cs" />
-    <Compile Include="DbQueryHelper.cs" />
-    <Compile Include="Facade.cs" />
+    <Compile Include="DataStore\DbQueryHelper.cs" />
+    <Compile Include="DataStore\IDataStoreBuilder.cs" />
+    <Compile Include="DataStore\ISettingsDataStoreServices.cs" />
+    <Compile Include="DataStore\SqlServerDataStoreBuilder.cs" />
+    <Compile Include="DataStore\SqlServerDataStoreServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TenantSetting.cs" />
-    <Compile Include="UserSetting.cs" />
-    <Compile Include="VendorSetting.cs" />
+    <Compile Include="SettingsHelper.cs" />
+    <Compile Include="SettingsScope.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
