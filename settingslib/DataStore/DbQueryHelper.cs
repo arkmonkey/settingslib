@@ -99,6 +99,20 @@ namespace settingslib.DataStore
             return query;
         }
 
+        internal string CreateNewSettingsInstanceQuery(string scope, string settingName, string instanceKey, string value)
+        {
+            string query = string.Format(
+                "INSERT INTO {0}(SettingId, InstanceKey, SettingValue) " +
+                "VALUES((SELECT SettingId FROM {1} WHERE SettingScope='{2}' AND SettingName='{3}'), '{4}', '{5}')",
+                GetTableName(TableNames.SETTING_INSTANCE),
+                GetTableName(TableNames.SETTING),
+                scope,
+                settingName,
+                instanceKey,
+                value);
+            return query;
+        }
+
         internal string GetSettingQuery(string scope, string settingName, string instanceKey)
         {
             string query = string.Format("SELECT TOP 1 s.SettingId, si.SettingInstanceId, s.IsActive, s.SettingScope, s.SettingName, si.InstanceKey, si.SettingValue " +
@@ -162,6 +176,8 @@ namespace settingslib.DataStore
             return query;
         }
         
+        
+
         #endregion //Settings-related
 
     }

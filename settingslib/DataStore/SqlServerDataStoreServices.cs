@@ -94,12 +94,24 @@ namespace settingslib.DataStore
             var query = QueryHelper.CheckSettingExistenceQuery(scope, settingName);
             SqlCommand cmd = new SqlCommand(query, _conn);
             var reader = cmd.ExecuteReader();
-            return reader.HasRows;
+            bool exists = reader.HasRows;
+            reader.Close();
+            
+            return exists;
         }
 
         public void Create(string scope, string settingName, string instanceKey, string initialValue)
         {
-            throw new NotImplementedException();
+            string query;
+            if (!Exists(scope, settingName))
+            {
+                query = QueryHelper.CreateNewSettingQuery(scope, settingName);
+                SqlCommand cmdSetting = new SqlCommand(query, _conn);
+                cmdSetting.ExecuteNonQuery();
+            }
+            query = QueryHelper.CreateNewSettingsInstanceQuery(scope, settingName, instanceKey, initialValue);
+            SqlCommand cmdSettingInstance = new SqlCommand(query, _conn);
+            cmdSettingInstance.ExecuteNonQuery();
         }
 
         #region Helpers
