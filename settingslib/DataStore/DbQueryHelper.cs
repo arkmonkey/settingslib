@@ -48,11 +48,10 @@ namespace settingslib.DataStore
 
         internal string CreateTableQuery(string tableRootName)
         {
-            tableRootName = tableRootName.ToLowerInvariant();
             string effectiveTableName = GetTableName(tableRootName);
             string query;
 
-            if (tableRootName.Equals(TableNames.SETTING.ToLowerInvariant()))
+            if (tableRootName.Equals(TableNames.SETTING, StringComparison.InvariantCultureIgnoreCase))
             {
                 query = string.Format(" " +
                     "CREATE TABLE {0} (" + 
@@ -64,16 +63,17 @@ namespace settingslib.DataStore
                         ")", effectiveTableName,
                         SettingKeyFieldSize);
             }
-            else if (tableRootName.Equals(TableNames.SETTING_INSTANCE.ToLowerInvariant()))
+            else if (tableRootName.Equals(TableNames.SETTING_INSTANCE, StringComparison.CurrentCultureIgnoreCase))
             {
                 query = string.Format(" " +
                     "CREATE TABLE {0} (" + 
-                        "SettingInstanceId INT IDENTITY(1,1) PRIMARY KEY " +
-                        "SettingId INT FOREIGN KEY REFERENCES Setting(SettingId)," +
-                        "InstanceKey VARCHAR({1}) NOT NULL," +
-                        "SettingValue VARCHAR({2}) NULL," +
+                        "SettingInstanceId INT IDENTITY(1,1) PRIMARY KEY, " +
+                        "SettingId INT NOT NULL FOREIGN KEY REFERENCES {1}(SettingId)," +
+                        "InstanceKey VARCHAR({2}) NOT NULL," +
+                        "SettingValue VARCHAR({3}) NULL," +
                         "DateLastUpdated SMALLDATETIME NOT NULL DEFAULT(GETDATE()) " +
                     ")", effectiveTableName,
+                    GetTableName(TableNames.SETTING),
                     InstanceIdFieldSize,
                     SettingValueFieldSize);
             }
@@ -119,7 +119,7 @@ namespace settingslib.DataStore
         {
             string query = string.Format("SELECT SettingId " +
                                          "FROM {0} " +
-                                         "WHERE ScopeName='{1}'" +
+                                         "WHERE SettingScope='{1}'" +
                                                "AND SettingName='{2}'",
                             GetTableName(TableNames.SETTING),
                             scope,

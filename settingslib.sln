@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "settingslib", "settingslib.csproj", "{A2FE94F4-A7A9-4DED-94E8-98D91C311C74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "settingslib", "settingslib\settingslib.csproj", "{A2FE94F4-A7A9-4DED-94E8-98D91C311C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "settingslib.test", "settingslib.test\settingslib.test.csproj", "{2D69411C-D488-4A3F-97BE-A7BA8046B9EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A2FE94F4-A7A9-4DED-94E8-98D91C311C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2FE94F4-A7A9-4DED-94E8-98D91C311C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2FE94F4-A7A9-4DED-94E8-98D91C311C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D69411C-D488-4A3F-97BE-A7BA8046B9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D69411C-D488-4A3F-97BE-A7BA8046B9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D69411C-D488-4A3F-97BE-A7BA8046B9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D69411C-D488-4A3F-97BE-A7BA8046B9EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

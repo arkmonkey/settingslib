@@ -2,3 +2,5 @@
 settingslib/obj/
 settingslib/bin/
 *.user
+settingslib.test/obj/
+settingslib.test/bin/
