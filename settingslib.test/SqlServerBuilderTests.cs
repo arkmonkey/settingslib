@@ -74,9 +74,36 @@ namespace settingslib.test
             //retrieve the value
             var settingValue = dataStoreServices.GetString(randomScope, randomSettingName, "1", "notfoo");
             Assert.AreEqual("foo", settingValue);
-
         }
 
+        [TestMethod]
+        public void TestOneOverwriteAndReadBack()
+        {
+            //build tables
+
+            //create one setting
+            //verify initial value
+            //change setting to something 
+            //verify it changed
+
+            Assert.Fail("Not yet implemented");
+        }
+
+        [TestMethod]
+        public void TestReadNonExistent()
+        {
+            //build tables
+
+            //read non-existent setting instance (setting also does not exist)
+            //this should throw an exception?
+
+            //read non-existent setting instance (but existing setting)
+            //this should return the default passed
+
+            Assert.Fail("Not yet implemented");
+        }
+
+        #region Helpers
         private static string RandomString(int length)
         {
             const string chars = "abcdefghijklmnopqrstuvwxyz";
@@ -84,5 +111,7 @@ namespace settingslib.test
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        #endregion
+
     }
 }
