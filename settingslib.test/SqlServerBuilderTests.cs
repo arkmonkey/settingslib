@@ -14,7 +14,7 @@ namespace settingslib.test
         [TestInitialize]
         public void Initialize()
         {
-            const string CONNECTION_STRING = @"data source=.\sqlexpress2014;initial catalog=SettingsLibUnitTestDb;user id=sa;password=asdf";
+            const string CONNECTION_STRING = @"data source=.\sqlexpress2014;initial catalog=SettingsLibUnitTestDb;user id=sa;password=asdf;MultipleActiveResultSets=true";
             _sqlConn = new SqlConnection(CONNECTION_STRING);
             _sqlConn.Open();
         }
@@ -77,30 +77,77 @@ namespace settingslib.test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]
+        public void TestBuildTablesWhenTheyAlreadyExist()
+        {
+            //build tables
+            string prefix = RandomString(10);
+            SqlServerDataStoreBuilder builder = new SqlServerDataStoreBuilder(prefix, _sqlConn);
+            builder.BuildDataStore();
+
+            SqlServerDataStoreBuilder builder2 = new SqlServerDataStoreBuilder(prefix, _sqlConn);
+            builder2.BuildDataStore();
+        }
+
+        [TestMethod]
         public void TestOneOverwriteAndReadBack()
         {
             //build tables
+            string prefix = RandomString(10);
+            SqlServerDataStoreBuilder builder = new SqlServerDataStoreBuilder(prefix, _sqlConn);
+            builder.BuildDataStore();
 
             //create one setting
-            //verify initial value
-            //change setting to something 
-            //verify it changed
+            SqlServerDataStoreServices dataStoreServices = new SqlServerDataStoreServices(prefix, _sqlConn);
+            string randomScope = RandomString(50);
+            string randomSettingName = RandomString(50);
+            dataStoreServices.Create(randomScope, randomSettingName, "1", "foo");
 
-            Assert.Fail("Not yet implemented");
+            //verify initial value
+            var value = dataStoreServices.GetString(randomScope, randomSettingName, "1", "");
+            Assert.AreEqual("foo", value);
+
+            //change setting to something 
+            dataStoreServices.Set(randomScope, randomSettingName, "1", "notfoo");
+            value = dataStoreServices.GetString(randomScope, randomSettingName, "1", "");
+
+            //verify it changed
+            Assert.AreEqual("notfoo", value);
+            
         }
 
         [TestMethod]
         public void TestReadNonExistent()
         {
             //build tables
+            string prefix = RandomString(10);
+            SqlServerDataStoreBuilder builder = new SqlServerDataStoreBuilder(prefix, _sqlConn);
+            builder.BuildDataStore();
 
-            //read non-existent setting instance (setting also does not exist)
-            //this should throw an exception?
+            //create one setting
+            SqlServerDataStoreServices dataStoreServices = new SqlServerDataStoreServices(prefix, _sqlConn);
+            string randomScope = RandomString(50);
+            string randomSettingName = RandomString(50);
 
-            //read non-existent setting instance (but existing setting)
-            //this should return the default passed
+            var result = dataStoreServices.GetString(randomScope, randomSettingName, "1", "randomString");
+            Assert.AreEqual("randomString", result);
+        }
 
-            Assert.Fail("Not yet implemented");
+        [TestMethod]
+        [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]
+        public void TestSetNonExistent()
+        {
+            //build tables
+            string prefix = RandomString(10);
+            SqlServerDataStoreBuilder builder = new SqlServerDataStoreBuilder(prefix, _sqlConn);
+            builder.BuildDataStore();
+
+            //create one setting
+            SqlServerDataStoreServices dataStoreServices = new SqlServerDataStoreServices(prefix, _sqlConn);
+            string randomScope = RandomString(50);
+            string randomSettingName = RandomString(50);
+            
+            dataStoreServices.Set(randomScope, randomSettingName, "1", "foo");
         }
 
         #region Helpers

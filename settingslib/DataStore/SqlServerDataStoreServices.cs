@@ -64,28 +64,34 @@ namespace settingslib.DataStore
         public void Set(string scope, string settingName, string instanceKey, string value)
         {
             string query = QueryHelper.CheckSettingExistenceQuery(scope, settingName);
-            SqlCommand cmd = new SqlCommand(query, _conn);
-            var reader = cmd.ExecuteReader();
-            if (!reader.HasRows)
-            {
-                throw new Exception("Invalid Set() call: Setting (including setting instance) does not exist.");
-            }
+            SqlCommand cmdSetting = new SqlCommand(query, _conn);
 
-            query = QueryHelper.CheckSettingInstanceExistenceQuery(scope, settingName, instanceKey);
-            cmd = new SqlCommand(query, _conn);
-            reader = cmd.ExecuteReader();
-            if (reader.HasRows)
+            using (var reader = cmdSetting.ExecuteReader())
             {
-                reader.Read();
-                query = QueryHelper.UpdateSettingInstanceQuery((int) reader["SettingInstanceId"], value);
-                SqlCommand cmdUpdate = new SqlCommand(query, _conn);
-                cmdUpdate.ExecuteNonQuery();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("Invalid Set() call: Setting (including setting instance) does not exist.");
+                }
             }
-            else
+            
+            
+            query = QueryHelper.CheckSettingInstanceExistenceQuery(scope, settingName, instanceKey);
+            SqlCommand cmdSettingInstance  = new SqlCommand(query, _conn);
+            using (var reader = cmdSettingInstance.ExecuteReader())
             {
-                query = QueryHelper.InsertNewSettingInstanceQuery((int)reader["SettingId"], instanceKey, value);
-                SqlCommand cmdInsert = new SqlCommand(query, _conn);
-                cmdInsert.ExecuteNonQuery();
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    query = QueryHelper.UpdateSettingInstanceQuery((int)reader["SettingInstanceId"], value);
+                    SqlCommand cmdUpdate = new SqlCommand(query, _conn);
+                    cmdUpdate.ExecuteNonQuery();
+                }
+                else
+                {
+                    query = QueryHelper.InsertNewSettingInstanceQuery((int)reader["SettingId"], instanceKey, value);
+                    SqlCommand cmdInsert = new SqlCommand(query, _conn);
+                    cmdInsert.ExecuteNonQuery();
+                }
             }
         }
 
